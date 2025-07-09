@@ -9,28 +9,70 @@ import XCTest
 @testable import SwiftMath
 
 final class SwiftMathTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testAdj() throws {
+        guard let m = Matrix(matrix: [
+            [-1, 3, 2],
+            [0, -2, 1],
+            [1, 0, -2]
+        ]) else {
+            return
         }
+        guard let ans = Matrix(matrix: [
+            [4, 6, 7],
+            [1, 0, 1],
+            [2, 3, 2]
+        ]) else {
+            return
+        }
+        XCTAssertEqual(m.getAdj(), ans)
     }
-
+    
+    func testDet() {
+        guard let m = Matrix(matrix: [
+            [-3, 5, 2],
+            [2, -4, -1],
+            [-3, 0, 6]
+        ]) else {
+            return
+        }
+        XCTAssertEqual(m.getDet(), 3)
+    }
+    
+    func testInverse() {
+        guard let m = Matrix(matrix: [
+            [-1, 3, 2],
+            [0, -2, 1],
+            [1, 0, -2]
+        ]) else {
+            return
+        }
+        guard let ans = Matrix(matrix: [
+            [4.0/3.0, 2, 7.0/3.0],
+            [1.0/3.0, 0, 1.0/3.0],
+            [2.0/3.0, 1, 2.0/3.0]
+        ]) else {
+            return
+        }
+        XCTAssertEqual(m.inverse(), ans)
+    }
+    
+    func testInverse2() {
+        guard let m = Matrix(matrix: [
+            [1, 1, 1, 1],
+            [1, -1, 1, 0],
+            [1, 1, 0, 0],
+            [1, 0, 0, 0]
+        ]) else {
+            return
+        }
+        guard let ans = Matrix(matrix: [
+            [0, 0, 0, 1],
+            [0, 0, 1, -1],
+            [0, 1, 1, -2],
+            [1, -1, -2, 2]
+        ]) else {
+            return
+        }
+        XCTAssertEqual(m.inverse(), ans)
+    }
 }
