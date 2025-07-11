@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AACB90912E2058610094A056 /* SwiftMath.docc in Sources */ = {isa = PBXBuildFile; fileRef = AACB908E2E2058610094A056 /* SwiftMath.docc */; };
 		AAF8DDE02E1DDB8A00FBE1AD /* SwiftMath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF8DDD42E1DDB8A00FBE1AD /* SwiftMath.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,19 +22,42 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AACB908E2E2058610094A056 /* SwiftMath.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = SwiftMath.docc; sourceTree = "<group>"; };
+		AACB90C62E219E1B0094A056 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		AAF8DDD42E1DDB8A00FBE1AD /* SwiftMath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftMath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAF8DDDF2E1DDB8A00FBE1AD /* SwiftMathTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftMathTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AACB90D22E219F060094A056 /* Exceptions for "Tests" folder in "SwiftMath" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SwiftMathTests/SwiftMathTests.swift,
+			);
+			target = AAF8DDD32E1DDB8A00FBE1AD /* SwiftMath */;
+		};
+		AACB90D32E219F060094A056 /* Exceptions for "Tests" folder in "SwiftMathTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SwiftMathTests/SwiftMathTests.swift,
+			);
+			target = AAF8DDDE2E1DDB8A00FBE1AD /* SwiftMathTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		AAF8DDD62E1DDB8A00FBE1AD /* SwiftMath */ = {
+		AACB90C82E219EF40094A056 /* Sources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SwiftMath;
+			path = Sources;
 			sourceTree = "<group>";
 		};
-		AAF8DDE32E1DDB8A00FBE1AD /* SwiftMathTests */ = {
+		AACB90CE2E219F000094A056 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SwiftMathTests;
+			exceptions = (
+				AACB90D22E219F060094A056 /* Exceptions for "Tests" folder in "SwiftMath" target */,
+				AACB90D32E219F060094A056 /* Exceptions for "Tests" folder in "SwiftMathTests" target */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -60,9 +84,11 @@
 		AAF8DDCA2E1DDB8A00FBE1AD = {
 			isa = PBXGroup;
 			children = (
-				AAF8DDD62E1DDB8A00FBE1AD /* SwiftMath */,
-				AAF8DDE32E1DDB8A00FBE1AD /* SwiftMathTests */,
+				AACB90CE2E219F000094A056 /* Tests */,
+				AACB90C82E219EF40094A056 /* Sources */,
+				AACB90C62E219E1B0094A056 /* Package.swift */,
 				AAF8DDD52E1DDB8A00FBE1AD /* Products */,
+				AACB908E2E2058610094A056 /* SwiftMath.docc */,
 			);
 			sourceTree = "<group>";
 		};
@@ -102,7 +128,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				AAF8DDD62E1DDB8A00FBE1AD /* SwiftMath */,
+				AACB90C82E219EF40094A056 /* Sources */,
+				AACB90CE2E219F000094A056 /* Tests */,
 			);
 			name = SwiftMath;
 			packageProductDependencies = (
@@ -123,9 +150,6 @@
 			);
 			dependencies = (
 				AAF8DDE22E1DDB8A00FBE1AD /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				AAF8DDE32E1DDB8A00FBE1AD /* SwiftMathTests */,
 			);
 			name = SwiftMathTests;
 			packageProductDependencies = (
@@ -194,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AACB90912E2058610094A056 /* SwiftMath.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
