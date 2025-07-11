@@ -9,7 +9,21 @@ import XCTest
 @testable import SwiftMath
 
 final class SwiftMathTests: XCTestCase {
-    func testAdj() throws {
+    func testSubscript() {
+        guard let m = Matrix(matrix: [
+            [-1, 3, 2],
+            [0, -4, 1],
+            [1, 0, -2]
+        ]) else {
+            return
+        }
+        XCTAssertEqual(m[0, 0], -1.0)
+        XCTAssertEqual(m[0, 1], 3.0)
+        XCTAssertEqual(m[1, 1], -4.0)
+        XCTAssertEqual(m[2, 2], -2.0)
+    }
+    
+    func testAdj() {
         guard let m = Matrix(matrix: [
             [-1, 3, 2],
             [0, -2, 1],
