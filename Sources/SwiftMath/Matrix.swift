@@ -10,6 +10,9 @@ import Foundation
 public struct Matrix {
     public let row: Int
     public let col: Int
+    public var count: Int {
+        return self.row
+    }
     var values: [Double]
     
     public init(row: Int, col: Int) {
@@ -42,6 +45,10 @@ public struct Matrix {
     func isValidIndex(row: Int, col: Int) -> Bool {
         return row >= 0 && row < self.row && col >= 0 && col < self.col
     }
+
+    func isValidIndex(row: Int) -> Bool {
+        return row >= 0 && row < self.row
+    }
     
     public subscript(row: Int, col: Int) -> Double {
         get {
@@ -51,6 +58,24 @@ public struct Matrix {
         set {
             assert(isValidIndex(row: row, col: col), "Index out of range")
             values[(row * self.col) + col] = newValue
+        }
+    }
+
+    public subscript(row: Int) -> [Double] {
+        get {
+            assert(isValidIndex(row: row), "Index out of range")
+            var array: [Double] = []
+            for c in 0..<self.col {
+                array.append(self[row, c])
+            }
+            return array
+        }
+        set {
+            assert(isValidIndex(row: row), "Index out of range")
+            assert(self.col == newValue.count, "Array size does not match")
+            for i in 0..<newValue.count {
+                self[row, i] = newValue[i]
+            }
         }
     }
     
@@ -161,6 +186,82 @@ public struct Matrix {
     public func toArray() -> [Double] {
         return values
     }
+
+    public func to2dArray() -> [[Double]] {
+        var matrix: [[Double]] = []
+        for r in 0..<self.row {
+            matrix.append(self[r])
+        }
+        return matrix
+    }
+}
+
+extension Matrix {
+    public static func gaussianElimination(a: Matrix, b: [Double]) -> [Double]? {
+        if b.count != a.count || a.row != a.col {
+            return nil
+        }
+
+        let n = a.count
+
+        guard var newMatrix = columnStack(a: a, b: b) else {
+            return nil
+        }
+
+        for i in 0..<n {
+            var pivotRow = i
+            var maxValue = abs(newMatrix[i, i])
+
+            for r in i+1..<n {
+                if abs(newMatrix[r, i]) > maxValue {
+                    maxValue = abs(newMatrix[r, i])
+                    pivotRow = r
+                }
+            }
+
+            if maxValue < 1e-10 {
+                return nil
+            }
+
+            if pivotRow != i {
+                let dummy = newMatrix[i]
+                newMatrix[i] = newMatrix[pivotRow]
+                newMatrix[pivotRow] = dummy
+            }
+
+            let pivot = newMatrix[i][i]
+            newMatrix[i] = newMatrix[i].map { $0 / pivot }
+
+            for r in i+1..<n {
+                let factor = newMatrix[r][i]
+                newMatrix[r] = zip(newMatrix[r], newMatrix[i].map { $0 * factor }).map { $0.0 - $0.1 }
+            }
+        }
+
+        var output: [Double] = Array(repeating: 0, count: n)
+        for i in stride(from: n-1, to: -1, by: -1) {
+            output[i] = newMatrix[i, n]
+            for j in i+1..<n {
+                output[i] -= newMatrix[i][j] * output[j]
+            }
+        }
+
+        return output
+    }
+
+    public static func columnStack(a: Matrix, b: [Double]) -> Matrix? {
+        var newMatrix = a.to2dArray()
+
+        if b.count != a.count {
+            return nil
+        }
+
+        for (index, value) in b.enumerated() {
+            newMatrix[index].append(value)
+        }
+
+        return Matrix(newMatrix)
+    }
 }
 
 extension Matrix {
@@ -224,18 +325,22 @@ extension Matrix {
 
 extension Matrix: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        if lhs.row != rhs.row || lhs.col != rhs.col {
+        return lhs.isEqual(to: rhs)
+    }
+
+    public func isEqual(to other: Matrix, accuracy: Double = 1e-10) -> Bool {
+        if self.row != other.row || self.col != other.col {
             return false
         }
-        for index in lhs.values.indices {
-            if !isEqual(lhs.values[index], rhs.values[index]) {
+        for index in self.values.indices {
+            if !Matrix.isEqual(self.values[index], other.values[index], accuracy) {
                 return false
             }
         }
         return true
     }
     
-    static func isEqual(_ a: Double, _ b: Double, epsilon: Double = 1e-9) -> Bool {
-        return abs(a - b) < epsilon
+    static func isEqual(_ a: Double, _ b: Double, _ accuracy: Double) -> Bool {
+        return abs(a - b) < accuracy
     }
 }
