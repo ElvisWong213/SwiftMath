@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Matrix {
+public class Matrix {
     public let row: Int
     public let col: Int
     public var count: Int {
@@ -21,7 +21,7 @@ public struct Matrix {
         self.values = Array(repeating: 0.0, count: row * col)
     }
     
-    public init?(_ matrix: [[Double]]) {
+    public convenience init?(_ matrix: [[Double]]) {
         if matrix.isEmpty {
             return nil
         }
@@ -34,7 +34,7 @@ public struct Matrix {
                 return nil
             }
         }
-        self = Self(row: matrix.count, col: matrix[0].count)
+        self.init(row: matrix.count, col: matrix[0].count)
         self.values = matrix.flatMap { $0 }
     }
 
@@ -79,8 +79,8 @@ public struct Matrix {
         }
     }
     
-    public func transpose() -> Self {
-        var newMatrix = Matrix(row: col, col: row)
+    public func transpose() -> Matrix {
+        let newMatrix = Matrix(row: col, col: row)
         for r in 0..<self.row {
             for c in 0..<self.col {
                 newMatrix[c, r] = self[r, c]
@@ -89,7 +89,7 @@ public struct Matrix {
         return newMatrix
     }
     
-    public func inverse() -> Self? {
+    public func inverse() -> Matrix? {
         guard let det = getDet(), let adj = getAdj() else {
             return nil
         }
@@ -103,7 +103,7 @@ public struct Matrix {
         return det(self)
     }
     
-    func det(_ matrix: Self) -> Double? {
+    func det(_ matrix: Matrix) -> Double? {
         if !matrix.isSquare() {
             return nil
         }
@@ -126,12 +126,12 @@ public struct Matrix {
         return result
     }
     
-    public func getAdj() -> Self? {
+    public func getAdj() -> Matrix? {
         if !isSquare() {
             return nil
         }
         let n = self.row
-        var newMatrix = Matrix(row: n, col: n)
+        let newMatrix = Matrix(row: n, col: n)
         for r in 0..<n {
             for c in 0..<n {
                 guard let ans = adj(self, r: r, c: c) else {
@@ -143,7 +143,7 @@ public struct Matrix {
         return newMatrix.transpose()
     }
     
-    func adj(_ matrix: Self, r: Int, c: Int) -> Double? {
+    func adj(_ matrix: Matrix, r: Int, c: Int) -> Double? {
         let n = matrix.row
         if n == 2 {
             guard let cofactor = getCofactor(matrix, r, c) else {
@@ -160,11 +160,11 @@ public struct Matrix {
         return result
     }
     
-    func getCofactor(_ matrix: Self, _ row: Int, _ col: Int) -> Self? {
+    func getCofactor(_ matrix: Matrix, _ row: Int, _ col: Int) -> Matrix? {
         if !matrix.isSquare() {
             return nil
         }
-        var newMatrix = Matrix(row: matrix.row - 1, col: matrix.col - 1)
+        let newMatrix = Matrix(row: matrix.row - 1, col: matrix.col - 1)
         var i = 0
         var j = 0
         for r in 0..<matrix.row {
@@ -204,7 +204,7 @@ extension Matrix {
 
         let n = a.count
 
-        guard var newMatrix = columnStack(a: a, b: b) else {
+        guard let newMatrix = columnStack(a: a, b: b) else {
             return nil
         }
 
@@ -265,30 +265,30 @@ extension Matrix {
 }
 
 extension Matrix {
-    public static func +(lhs: Self, rhs: Self) -> Self? {
+    public static func +(lhs: Matrix, rhs: Matrix) -> Matrix? {
         if lhs.row != rhs.row || lhs.col != rhs.col {
             return nil
         }
-        var newMatrix = Matrix(row: lhs.row, col: lhs.col)
+        let newMatrix = Matrix(row: lhs.row, col: lhs.col)
         for index in lhs.values.indices {
             newMatrix.values[index] = lhs.values[index] + rhs.values[index]
         }
         return newMatrix
     }
 
-    public static func -(lhs: Self, rhs: Self) -> Self? {
+    public static func -(lhs: Matrix, rhs: Matrix) -> Matrix? {
         if lhs.row != rhs.row || lhs.col != rhs.col {
             return nil
         }
-        var newMatrix = Matrix(row: lhs.row, col: lhs.col)
+        let newMatrix = Matrix(row: lhs.row, col: lhs.col)
         for index in lhs.values.indices {
             newMatrix.values[index] = lhs.values[index] - rhs.values[index]
         }
         return newMatrix
     }
 
-    public static func *(lhs: Double, rhs: Self) -> Self {
-        var newMatrix = rhs
+    public static func *(lhs: Double, rhs: Matrix) -> Matrix {
+        let newMatrix = rhs
         for i in 0..<rhs.row {
             for j in 0..<rhs.col {
                 newMatrix[i, j] *= lhs
@@ -297,15 +297,15 @@ extension Matrix {
         return newMatrix
     }
     
-    public static func *(lhs: Self, rhs: Double) -> Self {
+    public static func *(lhs: Matrix, rhs: Double) -> Matrix {
         return rhs * lhs
     }
     
-    public static func *(lhs: Self, rhs: Self) -> Self? {
+    public static func *(lhs: Matrix, rhs: Matrix) -> Matrix? {
         if lhs.col != rhs.row {
             return nil
         }
-        var newMatrix = Matrix(row: lhs.row, col: rhs.col)
+        let newMatrix = Matrix(row: lhs.row, col: rhs.col)
         for i in 0..<newMatrix.row {
             for j in 0..<newMatrix.col {
                 newMatrix[i, j] = multiply(lhs, rhs, row: i, col: j)
@@ -314,7 +314,7 @@ extension Matrix {
         return newMatrix
     }
     
-    static func multiply(_ lhs: Self, _ rhs: Self, row: Int, col: Int) -> Double {
+    static func multiply(_ lhs: Matrix, _ rhs: Matrix, row: Int, col: Int) -> Double {
         var result: Double = 0
         for i in 0..<lhs.col {
             result += lhs[row, i] * rhs[i, col]
@@ -324,7 +324,7 @@ extension Matrix {
 }
 
 extension Matrix: Equatable {
-    public static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Matrix, rhs: Matrix) -> Bool {
         return lhs.isEqual(to: rhs)
     }
 

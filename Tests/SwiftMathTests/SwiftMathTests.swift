@@ -285,6 +285,30 @@ final class SwiftMathTests: XCTestCase {
             XCTAssertEqual(result![i], ans[i], accuracy: 1e-10)
         }
     }
+ 
+    func testGaussianElimination4() {
+        let a = Matrix([
+            [ 2,  1, -1,  2,  0,  3, -2,  4,  1,  0],
+            [ 4,  5, -3,  6, -1,  2,  0,  3,  2, -1],
+            [ 0, -2,  7,  3,  1,  0,  5, -1,  2,  4],
+            [ 3,  0,  1, -2,  4,  2,  3,  1, -3,  2],
+            [ 1, -1,  0,  2,  5,  3,  2,  0,  4,  1],
+            [ 2,  3, -2,  1,  0,  6,  1, -1,  2,  3],
+            [ 0,  2,  3, -1,  2,  0,  7,  2, -2,  1],
+            [ 1,  4,  0,  2,  3, -2,  2,  8,  0,  2],
+            [ 2,  0,  4, -3,  1,  2,  1,  3,  9, -1],
+            [ 0, -1,  2,  1,  4,  0, -1,  2,  1, 10]
+        ])
+        let b: [Double] = [8, 19, 13, 7, 15, 21, 14, 30, 25, 18]
+
+        let result = Matrix.gaussianElimination(a: a!, b: b)
+        let ans: [Double] = [-9.502862098236018026, 29.571101125024768459, 24.313859649551971794, 2.7175243584129787858, 18.389280830546660945, 
+                            6.2596571353087519744, -19.208693439924068992, -9.2043244591979765748, -4.0656264448092057481, -7.406568393139770783]
+        XCTAssertEqual(result?.count, ans.count)
+        for i in ans.indices {
+            XCTAssertEqual(result![i], ans[i], accuracy: 1e-10)
+        }
+    }
 
     func testGaussianEliminationFail() {
         let a = Matrix([
