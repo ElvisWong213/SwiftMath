@@ -321,3 +321,24 @@ final class MatrixTests: XCTestCase {
         XCTAssertNil(result)
     }
 }
+
+final class CubicSplineTests: XCTestCase {
+    func testCubicSpline() {
+        let result = CubicSpline(points: [CGPoint(x: 1, y: 2), CGPoint(x: 3, y: 3), CGPoint(x: 5, y: 9), CGPoint(x: 8, y: 10)])
+        let ans: [Double] = [0.1995, -0.5986, 0.3004, 2.0986, -0.3728, 4.5526, -15.153, 17.5526, 0.11549, -2.7719, 21.469, -43.4853]
+
+        let resultArray = result.getResultArray()!
+        XCTAssertEqual(resultArray.count, ans.count)
+        for i in ans.indices {
+            XCTAssertEqual(resultArray[i], ans[i], accuracy: 1e-3)
+        }
+    }
+
+    func testCubicSplineGetY() {
+        let result = CubicSpline(points: [CGPoint(x: 1, y: 2), CGPoint(x: 3, y: 3), CGPoint(x: 5, y: 9), CGPoint(x: 8, y: 10)])
+
+        XCTAssertEqual(result.getY(given: 2)!, 1.901315789, accuracy: 1e-8)
+        XCTAssertEqual(result.getY(given: 4)!, 5.921052632, accuracy: 1e-8)
+        XCTAssertEqual(result.getY(given: 7)!, 10.59064327, accuracy: 1e-8)
+    }
+}
