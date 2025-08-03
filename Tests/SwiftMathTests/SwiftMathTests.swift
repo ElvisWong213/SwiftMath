@@ -320,6 +320,15 @@ final class MatrixTests: XCTestCase {
         let result = Matrix.gaussianElimination(a: a!, b: b)
         XCTAssertNil(result)
     }
+    
+    func testGaussianEliminationPerformance() {
+        let a = Matrix(Array(repeating: Array(repeating: Double.random(in: 0.0..<1000.0), count: 1000), count: 1000))
+        let b: [Double] = Array(repeating: Double.random(in: 0.0..<1000.0), count: 1000)
+        
+        measure {
+            _ = Matrix.gaussianElimination(a: a!, b: b)
+        }
+    }
 }
 
 final class CubicSplineTests: XCTestCase {

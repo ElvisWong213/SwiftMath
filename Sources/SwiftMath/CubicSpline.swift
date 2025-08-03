@@ -1,8 +1,13 @@
 import Foundation
 
-public class CubicSpline {
+public struct CubicSpline {
     public var points: [CGPoint]
     var result: [Double]?
+    
+    public init() {
+        self.points = []
+        self.result = nil
+    }
 
     public init(points: [CGPoint]) {
         self.points = points
@@ -10,7 +15,11 @@ public class CubicSpline {
         self.performCalculation()
     }
 
-    public func performCalculation() {
+    public mutating func performCalculation() {
+        if self.points.count < 2 {
+            return
+        }
+        
         var a: [[Double]] = []
         var b: [Double] = []
         let numberOfPoints = points.count - 1

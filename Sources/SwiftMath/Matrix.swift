@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class Matrix {
+public struct Matrix {
     public let row: Int
     public let col: Int
     public var count: Int {
@@ -21,7 +21,7 @@ public class Matrix {
         self.values = Array(repeating: 0.0, count: row * col)
     }
     
-    public convenience init?(_ matrix: [[Double]]) {
+    public init?(_ matrix: [[Double]]) {
         if matrix.isEmpty {
             return nil
         }
@@ -65,6 +65,8 @@ public class Matrix {
         get {
             assert(isValidIndex(row: row), "Index out of range")
             var array: [Double] = []
+            array.reserveCapacity(self.col)
+            
             for c in 0..<self.col {
                 array.append(self[row, c])
             }
@@ -80,7 +82,7 @@ public class Matrix {
     }
     
     public func transpose() -> Matrix {
-        let newMatrix = Matrix(row: col, col: row)
+        var newMatrix = Matrix(row: col, col: row)
         for r in 0..<self.row {
             for c in 0..<self.col {
                 newMatrix[c, r] = self[r, c]
@@ -131,7 +133,7 @@ public class Matrix {
             return nil
         }
         let n = self.row
-        let newMatrix = Matrix(row: n, col: n)
+        var newMatrix = Matrix(row: n, col: n)
         for r in 0..<n {
             for c in 0..<n {
                 guard let ans = adj(self, r: r, c: c) else {
@@ -164,7 +166,7 @@ public class Matrix {
         if !matrix.isSquare() {
             return nil
         }
-        let newMatrix = Matrix(row: matrix.row - 1, col: matrix.col - 1)
+        var newMatrix = Matrix(row: matrix.row - 1, col: matrix.col - 1)
         var i = 0
         var j = 0
         for r in 0..<matrix.row {
@@ -209,7 +211,7 @@ extension Matrix {
 
         let n = a.count
 
-        guard let newMatrix = columnStack(a: a, b: b) else {
+        guard var newMatrix = columnStack(a: a, b: b) else {
             return nil
         }
 
@@ -237,10 +239,14 @@ extension Matrix {
 
             let pivot = newMatrix[i][i]
             newMatrix[i] = newMatrix[i].map { $0 / pivot }
+            let rowMatrix = newMatrix[i]
 
             for r in i+1..<n {
                 let factor = newMatrix[r][i]
-                newMatrix[r] = zip(newMatrix[r], newMatrix[i].map { $0 * factor }).map { $0.0 - $0.1 }
+                
+                for index in rowMatrix.indices {
+                    newMatrix[r, index] = newMatrix[r, index] - rowMatrix[index] * factor
+                }
             }
         }
 
@@ -275,7 +281,7 @@ extension Matrix {
         if lhs.row != rhs.row || lhs.col != rhs.col {
             return nil
         }
-        let newMatrix = Matrix(row: lhs.row, col: lhs.col)
+        var newMatrix = Matrix(row: lhs.row, col: lhs.col)
         for index in lhs.values.indices {
             newMatrix.values[index] = lhs.values[index] + rhs.values[index]
         }
@@ -286,7 +292,7 @@ extension Matrix {
         if lhs.row != rhs.row || lhs.col != rhs.col {
             return nil
         }
-        let newMatrix = Matrix(row: lhs.row, col: lhs.col)
+        var newMatrix = Matrix(row: lhs.row, col: lhs.col)
         for index in lhs.values.indices {
             newMatrix.values[index] = lhs.values[index] - rhs.values[index]
         }
@@ -294,7 +300,7 @@ extension Matrix {
     }
 
     public static func *(lhs: Double, rhs: Matrix) -> Matrix {
-        let newMatrix = rhs
+        var newMatrix = rhs
         for i in 0..<rhs.row {
             for j in 0..<rhs.col {
                 newMatrix[i, j] *= lhs
@@ -311,7 +317,7 @@ extension Matrix {
         if lhs.col != rhs.row {
             return nil
         }
-        let newMatrix = Matrix(row: lhs.row, col: rhs.col)
+        var newMatrix = Matrix(row: lhs.row, col: rhs.col)
         for i in 0..<newMatrix.row {
             for j in 0..<newMatrix.col {
                 newMatrix[i, j] = multiply(lhs, rhs, row: i, col: j)
