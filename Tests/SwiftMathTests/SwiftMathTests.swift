@@ -8,7 +8,7 @@
 import XCTest
 @testable import SwiftMath
 
-final class SwiftMathTests: XCTestCase {
+final class MatrixTests: XCTestCase {
     func testInvalidMatrix() {
         let m = Matrix([
             [1, 2, 3],

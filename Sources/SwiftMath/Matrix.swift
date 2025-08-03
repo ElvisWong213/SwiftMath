@@ -198,7 +198,12 @@ public class Matrix {
 
 extension Matrix {
     public static func gaussianElimination(a: Matrix, b: [Double]) -> [Double]? {
-        if b.count != a.count || a.row != a.col {
+        if b.count != a.count {
+            print("Matrix size does not match array size")
+            return nil
+        }
+        if !a.isSquare() {
+            print("Number of equations does not match number of unknowns")
             return nil
         }
 
@@ -220,6 +225,7 @@ extension Matrix {
             }
 
             if maxValue < 1e-10 {
+                print("No unique solution")
                 return nil
             }
 
@@ -342,5 +348,46 @@ extension Matrix: Equatable {
     
     static func isEqual(_ a: Double, _ b: Double, _ accuracy: Double) -> Bool {
         return abs(a - b) < accuracy
+    }
+}
+
+extension Matrix: CustomStringConvertible {
+    public var description: String {
+        var description = "***Matrix***\n"
+        description += "Row: \(self.row)\n"
+        description += "Col: \(self.col)\n"
+        description += "Matrix values:\n"
+        for r in 0..<self.row {
+            switch r {
+            case 0:
+                description += "\t┌"
+            case self.row - 1:
+                description += "\t└"
+            default:
+                description += "\t│"
+            }
+
+            for c in 0..<self.col {
+                if c == 0 {
+                    description += "["
+                }
+                description += "\(self[r, c])"
+                if c == self.col - 1 {
+                    description += "]"
+                } else {
+                    description += ",\t"
+                }
+            }
+
+            switch r {
+            case 0:
+                description += "┐\n"
+            case self.row - 1:
+                description += "┘"
+            default:
+                description += "│\n"
+            }
+        }
+        return description
     }
 }
